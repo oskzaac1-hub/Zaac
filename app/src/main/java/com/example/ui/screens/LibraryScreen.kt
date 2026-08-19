@@ -43,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.ui.theme.TitaniumGold
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -221,17 +222,35 @@ fun VideoProjectItemCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface(
-                    color = NeonPurple.copy(alpha = 0.25f),
-                    shape = RoundedCornerShape(8.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Text(
-                        text = video.nicheCategory,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = NeonCyan,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                    )
+                    Surface(
+                        color = NeonPurple.copy(alpha = 0.25f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = video.nicheCategory,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = NeonCyan,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        )
+                    }
+
+                    Surface(
+                        color = TitaniumGold.copy(alpha = 0.15f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = video.languageName,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TitaniumGold,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
                 }
 
                 Surface(

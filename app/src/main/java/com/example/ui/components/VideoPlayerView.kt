@@ -236,20 +236,39 @@ fun VideoPlayerView(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Surface(
-                        color = Color.Black.copy(alpha = 0.75f),
-                        shape = RoundedCornerShape(8.dp),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, CyberBlue)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        Surface(
+                            color = Color.Black.copy(alpha = 0.75f),
+                            shape = RoundedCornerShape(8.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, CyberBlue)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "⚡ 9:16",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = CyberBlue,
+                                    fontWeight = FontWeight.Black
+                                )
+                            }
+                        }
+
+                        Surface(
+                            color = TitaniumGold.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(8.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, TitaniumGold)
                         ) {
                             Text(
-                                text = "⚡ TIKTOK VIRAL 9:16",
+                                text = video.languageName,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = CyberBlue,
-                                fontWeight = FontWeight.Black
+                                color = TitaniumGold,
+                                fontWeight = FontWeight.Black,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
                             )
                         }
                     }

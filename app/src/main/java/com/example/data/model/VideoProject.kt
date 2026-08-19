@@ -12,13 +12,15 @@ data class VideoProject(
     val hookHeadline: String,
     val fullScript: String,
     val scenesJson: String, // Serialized list of SceneItem
-    val voiceStyle: String = "Energetic Storyteller", // "Deep Narrator", "Mysterious Male", "Hyper Female", "Calm Stoic", "Energetic Storyteller"
-    val bgmTrackName: String = "Cyber Pulse", // "Cyber Pulse", "Deep Astral", "Cinematic Suspense", "Epic Motivation", "Lo-Fi Focus"
-    val hashtags: String = "#AI #Viral #Shorts",
+    val voiceStyle: String = "Narrador Grave Phonk BR",
+    val bgmTrackName: String = "Drift Phonk Beast",
+    val languageCode: String = "pt-BR",
+    val languageName: String = "Português",
+    val hashtags: String = "#OSKAi #TikTokViral #Grindset #FYP #Motivacao",
     val durationSeconds: Int = 20,
     val status: String = "READY", // DRAFT, READY, SCHEDULED, PUBLISHED
     val scheduledDailyTime: String = "09:00 AM",
-    val targetPlatforms: String = "YouTube Shorts,TikTok,Instagram Reels",
+    val targetPlatforms: String = "TikTok, Instagram Reels, YouTube Shorts",
     val publishedAt: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val viewsSimulated: Int = 0,

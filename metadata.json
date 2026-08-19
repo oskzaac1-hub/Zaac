@@ -1,6 +1,6 @@
 {
   "name": "OSK Ai",
-  "description": "OSK Ai - High-impact TikTok & Shorts video generator with masculine aesthetics, Phonk/Cyberpunk beats, AI narration, and daily automated social publishing.",
+  "description": "OSK Ai - High-impact TikTok & Shorts video generator with multi-language support, masculine aesthetics, Phonk/Cyberpunk beats, AI narration, and daily automated social publishing.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

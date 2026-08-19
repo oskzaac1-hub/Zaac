@@ -17,8 +17,13 @@ class TtsEngine(context: Context, private val onInitCompleted: (Boolean) -> Unit
     init {
         textToSpeech = TextToSpeech(context.applicationContext) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                val result = textToSpeech?.setLanguage(Locale.US)
-                isReady = result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED
+                // Default to Portuguese or system locale
+                val defaultLocale = Locale("pt", "BR")
+                val result = textToSpeech?.setLanguage(defaultLocale)
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    textToSpeech?.setLanguage(Locale.US)
+                }
+                isReady = true
                 setupListener()
                 onInitCompleted(isReady)
             } else {
@@ -42,7 +47,12 @@ class TtsEngine(context: Context, private val onInitCompleted: (Boolean) -> Unit
         })
     }
 
-    fun speak(text: String, voiceStyle: String = "Energetic Storyteller", onDone: (() -> Unit)? = null) {
+    fun speak(
+        text: String,
+        voiceStyle: String = "Narrador Grave Phonk BR",
+        languageCode: String = "pt-BR",
+        onDone: (() -> Unit)? = null
+    ) {
         if (!isReady || text.isBlank()) {
             onDone?.invoke()
             return
@@ -50,27 +60,49 @@ class TtsEngine(context: Context, private val onInitCompleted: (Boolean) -> Unit
 
         this.onDoneCallback = onDone
 
+        // Set TTS Locale corresponding to language code
+        val targetLocale = when (languageCode) {
+            "pt-BR" -> Locale("pt", "BR")
+            "en-US" -> Locale.US
+            "es-LA", "es-ES" -> Locale("es", "ES")
+            "ja-JP" -> Locale.JAPAN
+            "de-DE" -> Locale.GERMAN
+            "fr-FR" -> Locale.FRENCH
+            "it-IT" -> Locale.ITALIAN
+            else -> Locale("pt", "BR")
+        }
+
+        try {
+            textToSpeech?.setLanguage(targetLocale)
+        } catch (e: Exception) {
+            Log.w("TtsEngine", "Failed setting locale $targetLocale", e)
+        }
+
         // Configure pitch and speed based on voice style
-        when (voiceStyle) {
-            "Deep Narrator" -> {
-                textToSpeech?.setPitch(0.8f)
-                textToSpeech?.setSpeechRate(0.95f)
+        when {
+            voiceStyle.contains("Grave", ignoreCase = true) || voiceStyle.contains("Phonk", ignoreCase = true) || voiceStyle.contains("Deep", ignoreCase = true) -> {
+                textToSpeech?.setPitch(0.72f)
+                textToSpeech?.setSpeechRate(0.96f)
             }
-            "Mysterious Male" -> {
+            voiceStyle.contains("Coach", ignoreCase = true) || voiceStyle.contains("Motivação", ignoreCase = true) || voiceStyle.contains("Unstoppable", ignoreCase = true) -> {
+                textToSpeech?.setPitch(0.92f)
+                textToSpeech?.setSpeechRate(1.12f)
+            }
+            voiceStyle.contains("Cyber", ignoreCase = true) || voiceStyle.contains("Tático", ignoreCase = true) || voiceStyle.contains("Operative", ignoreCase = true) -> {
                 textToSpeech?.setPitch(0.85f)
-                textToSpeech?.setSpeechRate(0.9f)
+                textToSpeech?.setSpeechRate(1.05f)
             }
-            "Hyper Female" -> {
-                textToSpeech?.setPitch(1.25f)
-                textToSpeech?.setSpeechRate(1.15f)
+            voiceStyle.contains("Estoico", ignoreCase = true) || voiceStyle.contains("Stoic", ignoreCase = true) || voiceStyle.contains("Zen", ignoreCase = true) -> {
+                textToSpeech?.setPitch(0.80f)
+                textToSpeech?.setSpeechRate(0.90f)
             }
-            "Calm Stoic" -> {
-                textToSpeech?.setPitch(0.95f)
-                textToSpeech?.setSpeechRate(0.92f)
-            }
-            else -> { // "Energetic Storyteller"
+            voiceStyle.contains("Viral", ignoreCase = true) || voiceStyle.contains("TikTok", ignoreCase = true) || voiceStyle.contains("Hero", ignoreCase = true) -> {
                 textToSpeech?.setPitch(1.05f)
-                textToSpeech?.setSpeechRate(1.08f)
+                textToSpeech?.setSpeechRate(1.18f)
+            }
+            else -> {
+                textToSpeech?.setPitch(0.90f)
+                textToSpeech?.setSpeechRate(1.05f)
             }
         }
 

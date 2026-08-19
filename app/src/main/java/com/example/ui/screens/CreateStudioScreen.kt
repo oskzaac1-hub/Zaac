@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Refresh
@@ -45,7 +46,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.data.model.SupportedLanguages
 import com.example.data.model.TrendingNichesRepository
 import com.example.ui.GenerationState
 import com.example.ui.MainViewModel
@@ -60,6 +63,7 @@ fun CreateStudioScreen(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val selectedLanguage by viewModel.selectedLanguage.collectAsStateWithLifecycle()
     val selectedNiche by viewModel.selectedNiche.collectAsStateWithLifecycle()
     val customTopic by viewModel.customTopicInput.collectAsStateWithLifecycle()
     val selectedVoice by viewModel.selectedVoiceStyle.collectAsStateWithLifecycle()
@@ -67,14 +71,6 @@ fun CreateStudioScreen(
     val generationState by viewModel.generationState.collectAsStateWithLifecycle()
 
     val isGenerating = generationState is GenerationState.Generating
-
-    val voiceOptions = listOf(
-        "Deep Phonk Narrator (Grit & Bass)" to "Heavy sub-bass & grit",
-        "Unstoppable Coach (Intense)" to "Aggressive motivation",
-        "Cyberpunk AI Operative (Crisp)" to "Cold tactical analysis",
-        "Stoic Philosopher (Deep & Calm)" to "Resolute mental clarity",
-        "High-Octane Host (Punchy)" to "Fast TikTok hook delivery"
-    )
 
     val bgmOptions = listOf(
         "Drift Phonk Beast" to "Heavy 808s & Cowbells",
@@ -90,7 +86,7 @@ fun CreateStudioScreen(
             .padding(horizontal = 16.dp)
             .testTag("studio_screen"),
         contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         // Title and Studio Header
         item {
@@ -112,14 +108,129 @@ fun CreateStudioScreen(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Configure high-impact scripts, tactical voices, and aggressive soundtracks",
+                    text = "Gere vídeos de alto impacto em vários idiomas com vozes e legendas automáticas",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        // Section 1: Choose Niche
+        // Section 1: Multilingual Language Selector (Novo)
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = androidx.compose.foundation.BorderStroke(1.dp, CyberBlue.copy(alpha = 0.5f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Language,
+                                contentDescription = null,
+                                tint = CyberBlue,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "1. IDIOMA DO VÍDEO (MULTILINGUAL)",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Black,
+                                color = CyberBlue
+                            )
+                        }
+
+                        Surface(
+                            color = CyberBlue.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                text = "${selectedLanguage.flagEmoji} ${selectedLanguage.name}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = CyberBlue,
+                                fontWeight = FontWeight.Black,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(vertical = 2.dp)
+                    ) {
+                        items(SupportedLanguages.all) { lang ->
+                            val isSelected = lang.code == selectedLanguage.code
+                            Surface(
+                                modifier = Modifier
+                                    .clickable { viewModel.setLanguage(lang) }
+                                    .testTag("lang_chip_${lang.code}"),
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (isSelected) CyberBlue else MaterialTheme.colorScheme.surface,
+                                border = if (isSelected) androidx.compose.foundation.BorderStroke(1.dp, CyberBlue) else androidx.compose.foundation.BorderStroke(1.dp, StealthBorder)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(text = lang.flagEmoji, fontSize = 16.sp)
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Column {
+                                        Text(
+                                            text = lang.name,
+                                            style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
+                                            color = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            text = lang.country,
+                                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
+                                            color = if (isSelected) Color.Black.copy(alpha = 0.75f) else MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Surface(
+                        color = Color.Black.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(8.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, StealthBorder),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Exemplo de Gancho:",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = TitaniumGold,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = selectedLanguage.sampleHook,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.White,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // Section 2: Choose Niche
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -129,7 +240,7 @@ fun CreateStudioScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "1. TARGET NICHE",
+                        text = "2. NICHO DE ALTO IMPACTO",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Black,
                         color = CyberBlue
@@ -168,7 +279,7 @@ fun CreateStudioScreen(
             }
         }
 
-        // Section 2: Topic & Angle
+        // Section 3: Topic & Angle
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -183,7 +294,7 @@ fun CreateStudioScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "2. TOPIC & HOOK ANGLE",
+                            text = "3. TÓPICO DO VÍDEO",
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Black,
                             color = TitaniumGold
@@ -210,7 +321,7 @@ fun CreateStudioScreen(
                     OutlinedTextField(
                         value = customTopic,
                         onValueChange = { viewModel.setCustomTopic(it) },
-                        placeholder = { Text("e.g. ${selectedNiche.suggestedTopics.first()}") },
+                        placeholder = { Text("ex: ${selectedNiche.suggestedTopics.first()}") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("custom_topic_input"),
@@ -221,10 +332,10 @@ fun CreateStudioScreen(
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "Suggested High-Retention Angles:",
+                        text = "Sugestões de Ângulos Virais:",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -251,7 +362,7 @@ fun CreateStudioScreen(
             }
         }
 
-        // Section 3: Voice Persona
+        // Section 4: Voice Persona (Localizada para o idioma escolhido)
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -260,22 +371,35 @@ fun CreateStudioScreen(
                 border = androidx.compose.foundation.BorderStroke(1.dp, StealthBorder)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "3. AI VOICE ENGINE",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Black,
-                        color = CyberCrimson
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "4. VOZ IA (${selectedLanguage.name.uppercase()})",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Black,
+                            color = CyberCrimson
+                        )
+
+                        Text(
+                            text = "${selectedLanguage.voices.size} Estilos",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        voiceOptions.forEach { (voiceName, description) ->
-                            val isSelected = selectedVoice == voiceName
+                        selectedLanguage.voices.forEach { voice ->
+                            val isSelected = selectedVoice == voice.name
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { viewModel.setVoiceStyle(voiceName) }
-                                    .testTag("voice_option_$voiceName"),
+                                    .clickable { viewModel.setVoiceStyle(voice.name) }
+                                    .testTag("voice_option_${voice.id}"),
                                 shape = RoundedCornerShape(10.dp),
                                 color = if (isSelected) CyberCrimson.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surface,
                                 border = if (isSelected) androidx.compose.foundation.BorderStroke(1.dp, CyberCrimson) else androidx.compose.foundation.BorderStroke(1.dp, StealthBorder)
@@ -288,25 +412,22 @@ fun CreateStudioScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            imageVector = Icons.Default.Mic,
-                                            contentDescription = null,
-                                            tint = if (isSelected) CyberCrimson else MaterialTheme.colorScheme.onSurfaceVariant,
-                                            modifier = Modifier.size(18.dp)
-                                        )
+                                        Text(text = voice.iconEmoji, fontSize = 16.sp)
                                         Spacer(modifier = Modifier.width(10.dp))
-                                        Text(
-                                            text = voiceName,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
+                                        Column {
+                                            Text(
+                                                text = voice.name,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onSurface
+                                            )
+                                            Text(
+                                                text = voice.description,
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = if (isSelected) CyberCrimson else MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
                                     }
-                                    Text(
-                                        text = description,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = if (isSelected) CyberCrimson else MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
                                 }
                             }
                         }
@@ -315,7 +436,7 @@ fun CreateStudioScreen(
             }
         }
 
-        // Section 4: Sound Design
+        // Section 5: Sound Design
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -325,7 +446,7 @@ fun CreateStudioScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "4. SOUNDTRACK AUDIO VIBE",
+                        text = "5. TRILHA SONORA & VIBE",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Black,
                         color = MatrixGreen
@@ -393,7 +514,7 @@ fun CreateStudioScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = state?.stepMessage ?: "Synthesizing High-Impact Video...",
+                            text = state?.stepMessage ?: "Gerando Vídeo Multilingual...",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -436,7 +557,7 @@ fun CreateStudioScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = if (isGenerating) "Generating High-Retention Script..." else "Generate Video Short",
+                    text = if (isGenerating) "Criando Vídeo em ${selectedLanguage.name}..." else "Gerar Vídeo em ${selectedLanguage.name} (${selectedLanguage.flagEmoji})",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Black,
                     color = Color.Black
